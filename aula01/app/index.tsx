@@ -56,20 +56,30 @@ export default function App() {
   };
 
   const onSaveImageAsync = async () => {
-    // we will implement this later
+    try {
+      const localUri = await captureRef(imageRef, {
+        height: 440,
+        quality: 1,
+      });
+
+      await MediaLibrary.saveToLibraryAsync(localUri);
+      if (localUri) {
+        alert("Saved!");
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <View style={styles.container}>
         <View style={styles.imageContainer}>
-         <View ref={imageRef} collapsable={false}>
-          <ImageViewer
-              placeholderImageSource={PlaceholderImage}
-              selectedImage={selectedImage}
-            />
-            {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
+          <View ref={imageRef} collapsable={false}>
+              <ImageViewer placeholderImageSource={PlaceholderImage} selectedImage={selectedImage} />
+              {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
           </View>
+        </View>
+        
           {showAppOptions ? (
               <View style={styles.optionsContainer}>
                 <View style={styles.optionsRow}>
@@ -88,8 +98,7 @@ export default function App() {
             <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
           </EmojiPicker>
           <StatusBar style="auto" />
-        </View>
-      </View>
+        
     </GestureHandlerRootView>
   );
 }
